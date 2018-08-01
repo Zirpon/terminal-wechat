@@ -13,6 +13,20 @@ format_dict = {
    5 : logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'),
 }
 
+mapGroupLogger = {}
+mapFriendLogger = {}
+
+def getLogger(logType, logname):
+    if logType == "Group" :
+        mapGroupLogger[logname] = mapGroupLogger.get(logname) or Logger(logname="./log/GroupChat.log", loglevel=1, logger=logname).getlog()
+        return  mapGroupLogger[logname]
+    elif logType == "Friend" :
+        mapFriendLogger[logname] = mapFriendLogger.get(logname) or Logger(logname="./log/FriendChat.log", loglevel=1, logger=logname).getlog()
+        return  mapFriendLogger[logname]
+    else:
+        return None
+
+
 class Logger():
     def __init__(self, logname, loglevel, logger):
         '''
@@ -25,7 +39,7 @@ class Logger():
         self.logger.setLevel(logging.DEBUG)
         
         # 创建一个handler，用于写入日志文件
-        fh = logging.FileHandler(logname)
+        fh = logging.FileHandler(filename=logname, encoding="utf-8")
         fh.setLevel(logging.DEBUG)
         
         # 再创建一个handler，用于输出到控制台
