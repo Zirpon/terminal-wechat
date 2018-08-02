@@ -11,6 +11,7 @@ __doc__ = 'wechat module'
 #__name__ = "wechat"
 instance = itchat.new_instance()
 
+# todo: instance 的接口应该封装一个异常捕获的头 在函数执行前
 @instance.msg_register(TEXT, isGroupChat=True)
 def group_replay(msg):
     FromUser = instance.search_chatrooms(userName=msg['FromUserName'])
@@ -35,6 +36,7 @@ def group_replay(msg):
     # print("::::::::::::::::::::::::::::")
     # print("::::::::::::::::::::::::::::")
     # print("GroupChat[%s]:member[%s] send [%s]" % (chatroomName, senderName, msg['Text']))
+    # todo: 这里其实应该拉个线程/协程 来写日志的
     chatRoomLog = zlog.getLogger("Group",chatroomName)
     if chatRoomLog :
         chatRoomLog.debug("member[%s](%s) send [%s]" % (senderName, senderUserName, msg['Text']))
