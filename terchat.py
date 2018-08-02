@@ -76,5 +76,8 @@ def start():
     loop.close()
     '''
 
+def send_msg(content,username):
+    instance.send_msg(content,toUserName=username)
+
 def end():
     instance.logout()
