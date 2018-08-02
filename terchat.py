@@ -69,15 +69,15 @@ def start():
     def coRecv():
         newInstance.auto_login(hotReload=True, statusStorageDir='newInstance.pkl') # enableCmdQR=True,
         newInstance.run()
-    # 获取EventLoop:
+    # EventLoop:
     loop = asyncio.get_event_loop()
-    # 执行coroutine
+    # coroutine
     loop.run_until_complete(coRecv())
     loop.close()
     '''
 
 def send_msg(content,username):
-    instance.send_msg(content,toUserName=username)
+    return instance.send_msg("terminal_robot:%s" % content,toUserName=username)
 
 def end():
     instance.logout()
