@@ -1,18 +1,32 @@
-import sys
 
-def printvalue():
-    #print(_value)
-    return ""
-def getvalue():
-    return 20
-def setvalue(num):
-    tmp = 20
-    _value = num
-    return tmp
-
-if __name__=='__main__':
+#if __name__=='__main__':
     #print("this is a module")
-    getvalue()
+#    getvalue()
+
+def _odd_iter():
+    n = 1
+    while True:
+        n = n + 2
+        yield n
+
+# 返回一个匿名函数
+def _not_divisible(n):
+    return lambda x: x % n > 0
+
+def primes():
+    yield 2
+    it = _odd_iter() # 初始序列
+    while True:
+        n = next(it) # 返回序列的第一个数
+        yield n
+        it = filter(_not_divisible(n), it) # 构造新序列
+
+# 打印1000以内的素数:
+for n in primes():
+    if n < 10:
+        print(n)
+    else:
+        break
 
 '''
 sendlist = []

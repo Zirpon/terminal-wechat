@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import asyncio
 import itchat
 from itchat.content import *
@@ -30,7 +33,7 @@ def group_replay(msg):
     if senderName == '' :
         senderName = instance.search_chatrooms(userName=senderUserName)['NickName'] or "Empty senderName"
 
-    print("\n\n+++++++++++++++ Group %s(%s) Chat +++++++++++++++++++++++" % (chatroomName, chatroomUserName))
+    # print("\n\n+++++++++++++++ Group %s(%s) Chat +++++++++++++++++++++++" % (chatroomName, chatroomUserName))
     # print(chatroomName)
     # print(chatroom)
     # print("::::::::::::::::::::::::::::")
@@ -39,7 +42,7 @@ def group_replay(msg):
     # todo: 这里其实应该拉个线程/协程 来写日志的
     chatRoomLog = zlog.getLogger("Group",chatroomName)
     if chatRoomLog :
-        chatRoomLog.debug("member[%s](%s) send [%s]" % (senderName, senderUserName, msg['Text']))
+        chatRoomLog.debug("(%s)member[%s](%s) send [%s]" % (chatroomUserName, senderName, senderUserName, msg['Text']))
     # print("\n\n")
     # send to group
     # msg.user.send(u'@%s\u2005 I receuved: %s' % (senderName, msg['Text']))
@@ -51,7 +54,7 @@ def friend_replay(msg):
     friend = instance.search_friends(userName=msg['FromUserName'])
     nickname = friend['NickName']
     username = friend['UserName']
-    print("\n\n+++++++++++++++ Friend %s(%s) Chat +++++++++++++++++++++++" % (nickname,username))
+    # print("\n\n+++++++++++++++ Friend %s(%s) Chat +++++++++++++++++++++++" % (nickname,username))
     # print(msg)
     # print("::::::::::::::::::::::::::::")
     # print("FriendChat:friend[%s] send [%s]" % (nickname, msg['Text']))

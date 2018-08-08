@@ -54,7 +54,7 @@ class Logger():
         
         # 给logger添加handler
         self.logger.addHandler(fh)
-        self.logger.addHandler(ch)
+        #self.logger.addHandler(ch)
         
     
     def getlog(self):
