@@ -64,7 +64,7 @@ def friend_replay(msg):
         friendLog.debug("(%s) send [%s]" % (username, msg['Text']))
 
     # print("\n\n")
-    instance.send_msg("FriendChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (nickname, msg['Text']))
+    # instance.send_msg("FriendChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (nickname, msg['Text']))
     # instance.send_msg("Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon" % (nickname, msg['Text']), toUserName=msg['FromUserName'])
 
 def start():
