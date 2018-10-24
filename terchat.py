@@ -49,6 +49,28 @@ def group_replay(msg):
     # send to phone
     # instance.send_msg("GroupChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (senderName, msg['Text']))
 
+@instance.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO], isGroupChat=True)
+def download_files(msg):
+    FromUser = instance.search_chatrooms(userName=msg['FromUserName'])
+    ToUser = instance.search_chatrooms(userName=msg['ToUserName'])
+    chatroom = ( ((not FromUser) or (FromUser['NickName'] == 'A.Zirpon')) and ToUser ) or FromUser
+    chatroomName = chatroom['NickName']
+    chatroomUserName = chatroom['UserName']
+    senderName = msg['ActualNickName']
+    senderUserName = msg['ActualUserName']
+    if senderName == '' :
+        senderName = instance.search_chatrooms(userName=senderUserName)['NickName'] or "Empty senderName"
+    
+    chatRoomLog = zlog.getLogger("Group",chatroomName)
+    if chatRoomLog :
+        chatRoomLog.debug("(%s)member[%s](%s) send ![file](%s)" % (chatroomUserName, senderName, senderUserName, '../resource/'+msg['FileName']))
+    #msg.download(msg['FileName'])   #这个同样是下载文件的方式
+    #msg['Text'](msg['FileName'])      #下载文件
+    msg["Text"]('./resource/'+msg['FileName'])
+    #将下载的文件发送给发送者
+    #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
+    itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]))
+
 @instance.msg_register(TEXT, isFriendChat=True)
 def friend_replay(msg):
     friend = instance.search_friends(userName=msg['FromUserName'])
