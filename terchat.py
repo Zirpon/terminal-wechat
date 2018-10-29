@@ -69,7 +69,7 @@ def download_files(msg):
     msg["Text"]('./resource/'+msg['FileName'])
     #将下载的文件发送给发送者
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
-    itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]))
+    #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', './resource/'+msg['FileName']))
 
 @instance.msg_register(TEXT, isFriendChat=True)
 def friend_replay(msg):
@@ -104,7 +104,7 @@ def start():
     '''
 
 def send_msg(content,username):
-    return instance.send_msg("terminal_robot:%s" % content,toUserName=username)
+    return instance.send_msg("terchat:%s" % content,toUserName=username)
 
 def end():
     instance.logout()
