@@ -66,7 +66,8 @@ def download_files(msg):
         chatRoomLog.debug("(%s)member[%s](%s) send ![file](%s)" % (chatroomUserName, senderName, senderUserName, '../resource/'+msg['FileName']))
     #msg.download(msg['FileName'])   #这个同样是下载文件的方式
     #msg['Text'](msg['FileName'])      #下载文件
-    msg["Text"]('./resource/'+msg['FileName'])
+    if not msg['FileName'].endswith(".gif"):
+        msg["Text"]('./resource/'+msg['FileName'])
     #将下载的文件发送给发送者
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', './resource/'+msg['FileName']))
