@@ -83,7 +83,7 @@ def group_replay(msg):
     # msg.user.send(u'@%s\u2005 I receuved: %s' % (senderName, msg['Text']))
     # send to phone
     # instance.send_msg("GroupChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (senderName, msg['Text']))
-    IGroupChatAutoReply(chatroomName, msg, senderName)
+    IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName)
 
 @instance.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO], isGroupChat=True)
 def download_files(msg):
@@ -107,7 +107,7 @@ def download_files(msg):
     #将下载的文件发送给发送者
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', './resource/'+msg['FileName']))
-    IGroupChatAutoReply(chatroomName, msg, senderName)
+    IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName)
 
 @instance.msg_register([TEXT, PICTURE, FRIENDS, CARD, MAP, SHARING, RECORDING, ATTACHMENT, VIDEO], isFriendChat=True)
 def friend_replay(msg):
@@ -126,8 +126,8 @@ def friend_replay(msg):
     # print("\n\n")
     IFriendChatAutoReply(nickname, remarkname, msg)
 
-def IGroupChatAutoReply(chatroomName, msg, senderName):
-    if "春风" in chatroomName:
+def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
+    if "春风" in chatroomName or "京东7FRESH" in chatroomName:
         if msg['Type'] == 'Text':
             szTmp = ("%s" % msg['Text'])
             szTmp = szTmp.strip("吗?？"+"!")
@@ -142,8 +142,7 @@ def IGroupChatAutoReply(chatroomName, msg, senderName):
         szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看"]
         maxIndex = len(szDefault)
         index = random.randint(0, maxIndex+1)
-        print("\n\n+++++++++++++++ Group %s(%s) Chat (%d, %d) +++++++++++++++++++++++" 
-        % (chatroomName, chatroomUserName, index, maxIndex))
+        #print("\n\n+++++++++++++++ Group %s(%s) Chat (%d, %d) +++++++++++++++++++++++" % (chatroomName, chatroomUserName, index, maxIndex))
         curTime = time.time()
         global groupChatInterval
         if groupChatInterval == 0 or curTime > groupChatInterval:
