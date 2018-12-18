@@ -3,3 +3,10 @@ newInstance.pkl
 log/
 log/GroupChat.log
 resource/
+.idea/misc.xml
+.idea/encodings.xml
+.idea/modules.xml
+.idea/terminal-wechat.iml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/libraries/R_User_Library.xml
