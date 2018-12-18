@@ -83,24 +83,7 @@ def group_replay(msg):
     # msg.user.send(u'@%s\u2005 I receuved: %s' % (senderName, msg['Text']))
     # send to phone
     # instance.send_msg("GroupChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (senderName, msg['Text']))
-    if "春风" in chatroomName:
-        if msg['Type'] == 'Text':
-            szTmp = ("%s" % msg['Text'])
-            szTmp = szTmp.strip("吗?？"+"!")
-        else:
-            szTmp = None
-        szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看"]
-        maxIndex = len(szDefault)
-        index = random.randint(0, maxIndex+1)
-        print("\n\n+++++++++++++++ Group %s(%s) Chat (%d, %d) +++++++++++++++++++++++" % (chatroomName, chatroomUserName, index, maxIndex))
-        curTime = time.time()
-        global groupChatInterval
-        if groupChatInterval == 0 or curTime > groupChatInterval:
-            if index < maxIndex or szTmp is None or szTmp == "" :
-                msg.user.send("%s, %s" % (senderName,szDefault[index]))
-            else:
-                msg.user.send("%s, %s" % (senderName,szTmp))
-            groupChatInterval = curTime + 20
+    IGroupChatAutoReply(chatroomName, msg, senderName)
 
 @instance.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO], isGroupChat=True)
 def download_files(msg):
@@ -124,24 +107,7 @@ def download_files(msg):
     #将下载的文件发送给发送者
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
     #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', './resource/'+msg['FileName']))
-    if "春风" in chatroomName:
-        if msg['Type'] == 'Text':
-            szTmp = ("%s" % msg['Text'])
-            szTmp = szTmp.strip("吗?？"+"!")
-        else:
-            szTmp = None
-        szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看"]
-        maxIndex = len(szDefault)
-        index = random.randint(0, maxIndex+1)
-        print("\n\n+++++++++++++++ Group %s(%s) Chat (%d, %d) +++++++++++++++++++++++" % (chatroomName, chatroomUserName, index, maxIndex))
-        curTime = time.time()
-        global groupChatInterval
-        if groupChatInterval == 0 or curTime > groupChatInterval:
-            if index < maxIndex or szTmp is None or szTmp == "" :
-                msg.user.send("%s, %s" % (senderName,szDefault[index]))
-            else:
-                msg.user.send("%s, %s" % (senderName,szTmp))
-            groupChatInterval = curTime + 20
+    IGroupChatAutoReply(chatroomName, msg, senderName)
 
 @instance.msg_register([TEXT, PICTURE, FRIENDS, CARD, MAP, SHARING, RECORDING, ATTACHMENT, VIDEO], isFriendChat=True)
 def friend_replay(msg):
@@ -157,22 +123,61 @@ def friend_replay(msg):
     friendLog = zlog.getLogger("Friend",nickname)
     if friendLog :
         friendLog.debug("(%s) send [%s]" % (username, msg['Text']))
-
     # print("\n\n")
-    matchList = ["zirpon", "Zirpon", "莹莹", "嘉丽"]
+    IFriendChatAutoReply(nickname, remarkname, msg)
+
+def IGroupChatAutoReply(chatroomName, msg, senderName):
+    if "春风" in chatroomName:
+        if msg['Type'] == 'Text':
+            szTmp = ("%s" % msg['Text'])
+            szTmp = szTmp.strip("吗?？"+"!")
+        elif msg['Type'] == 'Recording':
+            szTmp = "你声音真好听"
+        elif msg['Type'] == 'Picture':
+            szTmp = "这图片真好看"
+        elif msg['Type'] == 'Video':
+            szTmp = "这视频真刺激"
+        else:
+            szTmp = None
+        szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看"]
+        maxIndex = len(szDefault)
+        index = random.randint(0, maxIndex+1)
+        print("\n\n+++++++++++++++ Group %s(%s) Chat (%d, %d) +++++++++++++++++++++++" 
+        % (chatroomName, chatroomUserName, index, maxIndex))
+        curTime = time.time()
+        global groupChatInterval
+        if groupChatInterval == 0 or curTime > groupChatInterval:
+            if (msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video') and szTmp is not None and szTmp != "": 
+                msg.user.send("%s" % (szTmp))
+            elif szTmp is None or szTmp == "" or index < maxIndex:
+                #msg.user.send("%s, %s" % (senderName,szDefault[index]))
+                msg.user.send("%s" % (szDefault[index]))
+            else:
+                msg.user.send("%s" % (szTmp))
+            groupChatInterval = curTime + 20
+
+def IFriendChatAutoReply(nickname, remarkname, msg):
+    matchList = ["Zirpon", "莹莹", "嘉丽", "sandy"]
     for index in range(0,len(matchList)):
         if matchList[index] in nickname or matchList[index] in remarkname:
             if msg['Type'] == 'Text':
                 szTmp = ("%s" % msg['Text'])
                 szTmp = szTmp.strip("吗?？"+"!")
+            elif msg['Type'] == 'Recording':
+                szTmp = "你声音真好听"
+            elif msg['Type'] == 'Picture':
+                szTmp = "这图片真好看"
+            elif msg['Type'] == 'Video':
+                szTmp = "这视频真刺激"
             else:
                 szTmp = None
             szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看", "我爱你", "我也爱你", "我爱死你了"]
             maxIndex = len(szDefault)
             index = random.randint(0, maxIndex+3)
-            #if matchList[index] == "莹莹":
-            if index < maxIndex or szTmp is None or szTmp == "":
-                instance.send_msg("%s" % (szDefault[index]), toUserName=msg['FromUserName'])
+            if (msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video') and szTmp is not None and szTmp != "": 
+                instance.send_msg("%s" % (szTmp), toUserName=msg['FromUserName'])
+            elif szTmp is None or szTmp == "" or index < maxIndex:
+                instance.send_msg("%s, %s" % (nickname, szDefault[index]), toUserName=msg['FromUserName'])
             else:
                 instance.send_msg("%s" % (szTmp), toUserName=msg['FromUserName'])
                 #instance.send_msg("FriendChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (nickname, msg['Text']))
