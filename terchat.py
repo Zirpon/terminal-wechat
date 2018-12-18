@@ -50,7 +50,7 @@ __doc__ = 'wechat module'
 groupChatInterval = 0
 instance = itchat.new_instance()
 # todo: instance 的接口应该封装一个异常捕获的头 在函数执行前
-@instance.msg_register(TEXT, isGroupChat=True)
+@instance.msg_register([TEXT, PICTURE, RECORDING, ATTACHMENT, VIDEO], isGroupChat=True)
 def group_replay(msg):
     FromUser = instance.search_chatrooms(userName=msg['FromUserName'])
     ToUser = instance.search_chatrooms(userName=msg['ToUserName'])
@@ -76,8 +76,20 @@ def group_replay(msg):
     # print("GroupChat[%s]:member[%s] send [%s]" % (chatroomName, senderName, msg['Text']))
     # todo: 这里其实应该拉个线程/协程 来写日志的
     chatRoomLog = zlog.getLogger("Group",chatroomName)
-    if chatRoomLog :
-        chatRoomLog.debug("(%s)member[%s](%s) send [%s]" % (chatroomUserName, senderName, senderUserName, msg['Text']))
+    if msg['Type'] == 'Text':
+        if chatRoomLog :
+            chatRoomLog.debug("(%s)member[%s](%s) send [%s]" % (chatroomUserName, senderName, senderUserName, msg['Text']))
+    elif msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video':
+        if chatRoomLog :
+            chatRoomLog.debug("(%s)member[%s](%s) send ![file](%s)" % (chatroomUserName, senderName, senderUserName, '../resource/'+msg['FileName']))
+    #msg.download(msg['FileName'])   #这个同样是下载文件的方式
+    #msg['Text'](msg['FileName'])    #下载文件
+    # if not msg['FileName'].endswith(".gif"):
+        msg["Text"]('./resource/'+msg['FileName'])
+    #将下载的文件发送给发送者
+    #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
+    #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', './resource/'+msg['FileName']))
+    
     # print("\n\n")
     # send to group
     # msg.user.send(u'@%s\u2005 I receuved: %s' % (senderName, msg['Text']))
@@ -85,29 +97,8 @@ def group_replay(msg):
     # instance.send_msg("GroupChat:Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon,thanks" % (senderName, msg['Text']))
     IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName)
 
-@instance.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO], isGroupChat=True)
-def download_files(msg):
-    FromUser = instance.search_chatrooms(userName=msg['FromUserName'])
-    ToUser = instance.search_chatrooms(userName=msg['ToUserName'])
-    chatroom = ( ((not FromUser) or (FromUser['NickName'] == 'A.Zirpon')) and ToUser ) or FromUser
-    chatroomName = chatroom['NickName']
-    chatroomUserName = chatroom['UserName']
-    senderName = msg['ActualNickName']
-    senderUserName = msg['ActualUserName']
-    if senderName == '' :
-        senderName = instance.search_chatrooms(userName=senderUserName)['NickName'] or "Empty senderName"
-    
-    chatRoomLog = zlog.getLogger("Group",chatroomName)
-    if chatRoomLog :
-        chatRoomLog.debug("(%s)member[%s](%s) send ![file](%s)" % (chatroomUserName, senderName, senderUserName, '../resource/'+msg['FileName']))
-    #msg.download(msg['FileName'])   #这个同样是下载文件的方式
-    #msg['Text'](msg['FileName'])      #下载文件
-    # if not msg['FileName'].endswith(".gif"):
-        msg["Text"]('./resource/'+msg['FileName'])
-    #将下载的文件发送给发送者
-    #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', msg["FileName"]), msg["FromUserName"])
-    #itchat.send('@%s@%s' % ('img' if msg['Type'] == 'Picture' else 'fil', './resource/'+msg['FileName']))
-    IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName)
+#@instance.msg_register([FRIENDS, CARD, MAP, SHARING], isGroupChat=True)
+#def download_files(msg):
 
 @instance.msg_register([TEXT, PICTURE, FRIENDS, CARD, MAP, SHARING, RECORDING, ATTACHMENT, VIDEO], isFriendChat=True)
 def friend_replay(msg):
@@ -119,15 +110,21 @@ def friend_replay(msg):
     # print(msg)
     # print("::::::::::::::::::::::::::::")
     # print("FriendChat:friend[%s] send [%s]" % (nickname, msg['Text']))
+    # print("\n\n")
 
     friendLog = zlog.getLogger("Friend",nickname)
     if friendLog :
-        friendLog.debug("(%s) send [%s]" % (username, msg['Text']))
-    # print("\n\n")
+        if msg['Type'] == 'Text':
+            friendLog.debug("(%s) send [%s]" % (username, msg['Text']))
+        elif msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video':
+            friendLog.debug("(%s) send ![file](%s)" % (username, '../resource/'+msg['FileName']))
+            msg["Text"]('./resource/'+msg['FileName'])
+        else:
+            friendLog.debug("(%s) send ![file](%s)" % (username, '../resource/'+msg['FileName']))
     IFriendChatAutoReply(nickname, remarkname, msg)
 
 def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
-    if "春风" in chatroomName or "京东7FRESH" in chatroomName:
+    if "春风" in chatroomName:# or "京东7FRESH" in chatroomName:
         if msg['Type'] == 'Text':
             szTmp = ("%s" % msg['Text'])
             szTmp = szTmp.strip("吗?？"+"!")
@@ -153,7 +150,7 @@ def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
                 msg.user.send("%s" % (szDefault[index]))
             else:
                 msg.user.send("%s" % (szTmp))
-            groupChatInterval = curTime + 20
+            groupChatInterval = curTime + 1800
 
 def IFriendChatAutoReply(nickname, remarkname, msg):
     matchList = ["Zirpon", "莹莹", "嘉丽", "sandy"]
