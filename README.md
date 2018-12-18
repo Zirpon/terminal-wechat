@@ -11,13 +11,6 @@
 - Auto download the vedio, voice, picture even though it was retracted
 - record all the text msg even though it was retracted
 
-- 增加了好友模糊搜索功能
-- 增加了设置特定好友自动回复功能
-- 增加了设置特定群聊自动定时回复功能
-- 发送消息接口
-- 记录视频语音图片消息
-- 记录文本消息
-
 usage:
 
 ```shell
@@ -25,6 +18,18 @@ usage:
 >>> import terchat
 >>> terchat.start()
 >>> terchat.send_msg("蛋挞 我要回家了", "@92c3dc453017be5ef25908102a925cd1")
+>>> terchat.get_friends("蛋挞")
 >>> terchat.end()
 >>> quit()
 ```
+
+---
+
+> 这是一个终端友好使用者的微信工具
+
+- 增加了好友模糊搜索功能
+- 增加了设置特定好友自动回复功能
+- 增加了设置特定群聊自动定时回复功能
+- 发送消息接口
+- 记录视频语音图片消息
+- 记录文本消息
