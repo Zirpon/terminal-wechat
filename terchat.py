@@ -82,6 +82,20 @@ def group_replay(msg):
     elif msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video':
         if chatRoomLog :
             chatRoomLog.debug("(%s)member[%s](%s) send ![file](%s)" % (chatroomUserName, senderName, senderUserName, '../resource/'+msg['FileName']))
+    elif msg['Type'] == 'Map':
+        x, y, location = re.search("<location x=\"(.*?)\" y=\"(.*?)\".*label=\"(.*?)\".*", msg['OriContent']).group(1, 2, 3)
+        if location is None:
+            msg_content = "纬度->" + x.__str__() + " 经度->" + y.__str__()     #内容为详细的地址
+        else:
+            msg_content = location
+        if chatRoomLog :
+            chatRoomLog.debug("(%s)member[%s](%s) send location:%s" % (chatroomUserName, senderName, senderUserName, msg_content))
+    elif msg['Type'] == 'Sharing':
+        #如果消息为分享的音乐或者文章，详细的内容为文章的标题或者是分享的名字
+        msg_content = msg['Text']
+        msg_share_url = msg['Url']
+        if chatRoomLog :
+            chatRoomLog.debug("(%s)member[%s](%s) share content:%s, url:%s" % (chatroomUserName, senderName, senderUserName, msg_content, msg_share_url))
     #msg.download(msg['FileName'])   #这个同样是下载文件的方式
     #msg['Text'](msg['FileName'])    #下载文件
     # if not msg['FileName'].endswith(".gif"):
@@ -130,6 +144,19 @@ def friend_replay(msg):
         elif msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video':
             friendLog.debug("(%s) send ![file](%s)" % (username, '../resource/'+msg['FileName']))
             msg["Text"]('./resource/'+msg['FileName'])
+        elif msg['Type'] == 'Map':
+            #如果消息为分享的位置信息
+            x, y, location = re.search("<location x=\"(.*?)\" y=\"(.*?)\".*label=\"(.*?)\".*", msg['OriContent']).group(1, 2, 3)
+            if location is None:
+                msg_content = "纬度->" + x.__str__() + " 经度->" + y.__str__()     #内容为详细的地址
+            else:
+                msg_content = location
+            friendLog.debug("(%s) send location:%s" % (username, msg_content))
+        elif msg['Type'] == 'Sharing':
+            #如果消息为分享的音乐或者文章，详细的内容为文章的标题或者是分享的名字
+            msg_content = msg['Text']
+            msg_share_url = msg['Url']
+            friendLog.debug("(%s) share content:%s, url:%s" % (username, msg_content, msg_share_url))
         else:
             friendLog.debug("(%s) send ![file](%s)" % (username, '../resource/'+msg['FileName']))
     IFriendChatAutoReply(nickname, remarkname, msg)
