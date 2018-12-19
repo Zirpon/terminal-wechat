@@ -103,6 +103,17 @@ def group_replay(msg):
 @instance.msg_register([TEXT, PICTURE, FRIENDS, CARD, MAP, SHARING, RECORDING, ATTACHMENT, VIDEO], isFriendChat=True)
 def friend_replay(msg):
     friend = instance.search_friends(userName=msg['FromUserName'])
+    if friend is None:
+        friends = instance.get_friends(update=flag)
+        bingo = False
+        for f in range(0,len(friends)):
+            if msg['FromUserName'] in friends[f]['UserName']:
+                bingo = True
+                friend = friends[f]
+                break
+        if friend is None:
+            return
+
     nickname = friend['NickName']
     username = friend['UserName']
     remarkname = friend['RemarkName']
