@@ -162,7 +162,7 @@ def friend_replay(msg):
     IFriendChatAutoReply(nickname, remarkname, msg)
 
 def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
-    if "HLG" in chatroomName or "京东7FFRESH" in chatroomName or "枪战3微信群" in chatroomName or "广州开车群" in chatroomName:
+    if "HLG" in chatroomName or "京东7FRESH" in chatroomName or "枪战3微信群" in chatroomName or "广州开车群" in chatroomName:
         if msg['Type'] == 'Text':
             szTmp = ("%s" % msg['Text'])
             szTmp = szTmp.strip("吗?？"+"!")
