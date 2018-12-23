@@ -7,6 +7,7 @@ from itchat.content import *
 import zlog
 import random
 import time, datetime
+import configparser
 
 '''
 print( random.randint(1,10) )        # 产生 1 到 10 的一个整数型随机数  
@@ -162,7 +163,15 @@ def friend_replay(msg):
     IFriendChatAutoReply(nickname, remarkname, msg)
 
 def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
-    if "HLG" in chatroomName or "京东7FRESH" in chatroomName or "枪战3微信群" in chatroomName or "广州开车群" in chatroomName:
+    cf = configparser.ConfigParser()
+    cf.read("test.conf")
+
+    flag = False
+    for groupname in cf.options("AutoReplyGroupList"):
+        if groupname in chatroomName:
+            flag = True
+
+    if flag == True:
         if msg['Type'] == 'Text':
             szTmp = ("%s" % msg['Text'])
             szTmp = szTmp.strip("吗?？"+"!")
@@ -174,9 +183,9 @@ def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
             szTmp = "这视频真刺激"
         else:
             szTmp = None
-        szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看"]
+        szDefault = cf.options("AutoReplyGroupDefaultMsg")
         maxIndex = len(szDefault)
-        index = random.randint(0, maxIndex+1)
+        index = random.randint(0, maxIndex+cf.getint("GroupChatParam", "msgListRandomRange"))
         #print("\n\n+++++++++++++++ Group %s(%s) Chat (%d, %d) +++++++++++++++++++++++" % (chatroomName, chatroomUserName, index, maxIndex))
         curTime = time.time()
         global groupChatInterval
@@ -188,10 +197,10 @@ def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
                 msg.user.send("%s" % (szDefault[index]))
             else:
                 msg.user.send("%s" % (szTmp))
-            groupChatInterval = curTime + 1800
+            groupChatInterval = curTime + cf.getint("GroupChatParam", "groupChatInterval")
 
 def IFriendChatAutoReply(nickname, remarkname, msg):
-    matchList = ["Zirpon", "莹莹", "嘉丽", "sandy"]
+    matchList = cf.options("AutoReplyFriendList")
     for index in range(0,len(matchList)):
         if matchList[index] in nickname or matchList[index] in remarkname:
             if msg['Type'] == 'Text':
@@ -205,9 +214,9 @@ def IFriendChatAutoReply(nickname, remarkname, msg):
                 szTmp = "这视频真刺激"
             else:
                 szTmp = None
-            szDefault = ["我也不知道为什么", "我也觉得是这样", "你说得太棒了", "真好看", "太美了", "你真是聪明", "你最好看", "我爱你", "我也爱你", "我爱死你了"]
+            szDefault = cf.options("AutoReplyFriendDefaultMsg")
             maxIndex = len(szDefault)
-            index = random.randint(0, maxIndex+3)
+            index = random.randint(0, maxIndex+cf.getint("FriendChatParam", "msgListRandomRange"))
             if (msg['Type'] == 'Recording' or msg['Type'] == 'Picture' or msg['Type'] == 'Video') and szTmp is not None and szTmp != "": 
                 instance.send_msg("%s" % (szTmp), toUserName=msg['FromUserName'])
             elif szTmp is None or szTmp == "" or index < maxIndex:
@@ -246,6 +255,22 @@ def get_friends(remarkName=None, nickName=None, flag=False):
             print("nickName",f,"--", friends[f])
         elif remarkName is None and nickName is None:
             print(f,"--", friends[f])
+
+def printConfig(section=None):
+    cf = configparser.ConfigParser()
+    cf.read("test.conf")
+
+    #return all section
+    secs = cf.sections()
+    print ('sections:', secs, type(secs))
+    if section is not None and section != "":
+        opts = cf.options(section)
+        print ('options:', opts, type(opts))
+        kvs = cf.items(section)
+        print ('kvs:', kvs)
+
+
+
 
 def end():
     instance.logout()
