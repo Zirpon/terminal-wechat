@@ -164,10 +164,11 @@ def friend_replay(msg):
 
 def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
     cf = configparser.ConfigParser()
-    cf.read("test.conf")
+    cf.read("test.conf", encoding="utf-8")
 
     flag = False
-    for groupname in cf.options("AutoReplyGroupList"):
+    matchList = cf.get("GroupChatParam", "AutoReplyGroupList").split('|')
+    for groupname in matchList:
         if groupname in chatroomName:
             flag = True
 
@@ -200,7 +201,10 @@ def IGroupChatAutoReply(chatroomName, chatroomUserName, msg, senderName):
             groupChatInterval = curTime + cf.getint("GroupChatParam", "groupChatInterval")
 
 def IFriendChatAutoReply(nickname, remarkname, msg):
-    matchList = cf.options("AutoReplyFriendList")
+    cf = configparser.ConfigParser()
+    cf.read("test.conf", encoding="utf-8")
+
+    matchList = cf.get("FriendChatParam", "AutoReplyFriendList").split('|')
     for index in range(0,len(matchList)):
         if matchList[index] in nickname or matchList[index] in remarkname:
             if msg['Type'] == 'Text':
@@ -268,9 +272,10 @@ def printConfig(section=None):
         print ('options:', opts, type(opts))
         kvs = cf.items(section)
         print ('kvs:', kvs)
-
-
-
+        for key,value in kvs:
+            print(key)
+            print(value.split('|'))
+    cf.get("FriendChatParam", "AutoReplyFriendList").split('|')
 
 def end():
     instance.logout()
