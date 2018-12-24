@@ -258,7 +258,7 @@ def get_friends(remarkName=None, nickName=None, flag=False):
 
 def printConfig(section=None):
     cf = configparser.ConfigParser()
-    cf.read("test.conf")
+    cf.read("test.conf", encoding="utf-8")
 
     #return all section
     secs = cf.sections()
