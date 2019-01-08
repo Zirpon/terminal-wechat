@@ -205,6 +205,7 @@ def IFriendChatAutoReply(nickname, remarkname, msg):
     cf.read("test.conf", encoding="utf-8")
 
     matchList = cf.get("FriendChatParam", "AutoReplyFriendList").split('|')
+    # matchList 为空会匹配到任意的好友 bug
     for index in range(0,len(matchList)):
         if matchList[index] in nickname or matchList[index] in remarkname:
             if msg['Type'] == 'Text':
