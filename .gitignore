@@ -10,3 +10,4 @@ resource/
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/libraries/R_User_Library.xml
+tmp/

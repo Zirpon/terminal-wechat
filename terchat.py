@@ -232,7 +232,7 @@ def IFriendChatAutoReply(nickname, remarkname, msg):
                 #instance.send_msg("Dear %s\u2005,I am a robot,got your msg %s,My master will reply you soon" % (nickname, msg['Text']), toUserName=msg['FromUserName'])
 
 def start():
-    instance.auto_login(hotReload=True, statusStorageDir='newInstance.pkl') # enableCmdQR=True,
+    instance.auto_login(hotReload=True, statusStorageDir='newInstance.pkl', enableCmdQR=2)
     instance.run(False,False)
     '''
     def coRecv():
