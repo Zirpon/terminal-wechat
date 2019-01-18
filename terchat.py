@@ -120,7 +120,7 @@ def group_replay(msg):
 def friend_replay(msg):
     friend = instance.search_friends(userName=msg['FromUserName'])
     if friend is None:
-        friends = instance.get_friends(update=flag)
+        friends = instance.get_friends(update=True)
         bingo = False
         for f in range(0,len(friends)):
             if msg['FromUserName'] in friends[f]['UserName']:
