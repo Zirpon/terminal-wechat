@@ -8,6 +8,7 @@ import zlog
 import random
 import time, datetime
 import configparser
+import re
 
 '''
 print( random.randint(1,10) )        # 产生 1 到 10 的一个整数型随机数  
