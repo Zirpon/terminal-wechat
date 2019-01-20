@@ -234,7 +234,7 @@ def IFriendChatAutoReply(nickname, remarkname, msg):
 
 def start():
     instance.auto_login(hotReload=True, statusStorageDir='newInstance.pkl', enableCmdQR=2)
-    instance.run(False,False)
+    instance.run(False)
     '''
     def coRecv():
         newInstance.auto_login(hotReload=True, statusStorageDir='newInstance.pkl') # enableCmdQR=True,
