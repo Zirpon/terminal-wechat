@@ -1,7 +1,7 @@
 # terminal-wechat
-
+  命令行终端微信 支持发送好友，群文字消息 基于 python itchat 
 > this is a terminal wechat, supported send and receive wechat group or friend Text msg, in the python interactive mode
->
+
 > based on [itchat](https://github.com/littlecodersh/ItChat)
 
 - Friend name approximate matching search
